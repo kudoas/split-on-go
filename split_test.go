@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestSplitByBytes(t *testing.T) {
+func TestByByte(t *testing.T) {
 	cases := []struct {
 		content       string
 		bytesPerFile  int
@@ -42,7 +42,8 @@ func TestSplitByBytes(t *testing.T) {
 			}
 			defer os.Remove(inputPath)
 
-			err = splitByBytes(inputPath, c.bytesPerFile)
+			split := NewSplit(inputPath)
+			err = split.ByByte(c.bytesPerFile)
 			if err != nil && !c.expectedError {
 				t.Errorf("splitByBytes returned an unexpected error: %v", err)
 			} else if err == nil && c.expectedError {
@@ -60,7 +61,7 @@ func TestSplitByBytes(t *testing.T) {
 	}
 }
 
-func TestSplitByLines(t *testing.T) {
+func TestByLine(t *testing.T) {
 	cases := []struct {
 		content       string
 		linesPerFile  int
@@ -90,7 +91,8 @@ func TestSplitByLines(t *testing.T) {
 			}
 			defer os.Remove(inputPath)
 
-			err = splitByLines(inputPath, c.linesPerFile)
+			split := NewSplit(inputPath)
+			err = split.ByLine(c.linesPerFile)
 			if err != nil && !c.expectedError {
 				t.Errorf("splitByLines returned an unexpected error: %v", err)
 			} else if err == nil && c.expectedError {
@@ -108,7 +110,7 @@ func TestSplitByLines(t *testing.T) {
 	}
 }
 
-func TestSplitByChunks(t *testing.T) {
+func TestByChunk(t *testing.T) {
 	cases := []struct {
 		content       string
 		chunksPerFile int
@@ -138,7 +140,8 @@ func TestSplitByChunks(t *testing.T) {
 			}
 			defer os.Remove(inputPath)
 
-			err = splitByChunks(inputPath, c.chunksPerFile)
+			split := NewSplit(inputPath)
+			err = split.ByChunk(c.chunksPerFile)
 			if err != nil && !c.expectedError {
 				t.Errorf("splitByChunks returned an unexpected error: %v", err)
 			} else if err == nil && c.expectedError {

@@ -11,6 +11,14 @@ type CLIOptions struct {
 	ChunkCount int
 }
 
+func NewCLIOption(byteCount int, lineCount int, chunkCount int) *CLIOptions {
+	return &CLIOptions{
+		ByteCount:  byteCount,
+		LineCount:  lineCount,
+		ChunkCount: chunkCount,
+	}
+}
+
 func (opts *CLIOptions) Handle(args []string, tailArgs []string) error {
 	if len(args) == 0 || len(tailArgs) != 1 || len(args) > 0 && args[0] == "help" {
 		usage := `usage:
@@ -21,12 +29,17 @@ func (opts *CLIOptions) Handle(args []string, tailArgs []string) error {
 		fmt.Print(usage)
 		return nil
 	}
+
+	split := NewSplit(tailArgs[0])
 	switch args[0] {
 	case "-b":
 		if len(args) != 3 {
 			return fmt.Errorf("illegal option, Please check with `help` cmd.")
 		}
-		splitByBytes(tailArgs[0], opts.ByteCount)
+		err := split.ByByte(opts.ByteCount)
+		if err != nil {
+			return err
+		}
 	case "-l":
 		arg, err := strconv.Atoi(args[1])
 		if err != nil {
@@ -38,7 +51,10 @@ func (opts *CLIOptions) Handle(args []string, tailArgs []string) error {
 		if len(args) != 3 {
 			return fmt.Errorf("illegal option, Please check with `help` cmd.")
 		}
-		splitByLines(tailArgs[0], opts.LineCount)
+		err = split.ByLine(opts.LineCount)
+		if err != nil {
+			return err
+		}
 	case "-n":
 		arg, err := strconv.Atoi(args[1])
 		if err != nil {
@@ -50,9 +66,15 @@ func (opts *CLIOptions) Handle(args []string, tailArgs []string) error {
 		if len(args) != 3 {
 			return fmt.Errorf("illegal option, Please check with `help` cmd.")
 		}
-		splitByChunks(tailArgs[0], opts.ChunkCount)
+		err = split.ByChunk(opts.ChunkCount)
+		if err != nil {
+			return err
+		}
 	default:
-		splitByLines(tailArgs[0], 1000)
+		err := split.ByLine(1000)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

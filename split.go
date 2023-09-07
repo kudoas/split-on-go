@@ -7,8 +7,18 @@ import (
 	"os"
 )
 
-func splitByBytes(path string, bytesPerFile int) error {
-	file, err := os.Open(path)
+type Split struct {
+	filePath string
+}
+
+func NewSplit(filePath string) *Split {
+	return &Split{
+		filePath: filePath,
+	}
+}
+
+func (s *Split) ByByte(bytesPerFile int) error {
+	file, err := os.Open(s.filePath)
 	if err != nil {
 		return err
 	}
@@ -46,8 +56,8 @@ func splitByBytes(path string, bytesPerFile int) error {
 	return nil
 }
 
-func splitByLines(path string, linesPerFile int) error {
-	file, err := os.Open(path)
+func (s *Split) ByLine(linesPerFile int) error {
+	file, err := os.Open(s.filePath)
 	if err != nil {
 		return err
 	}
@@ -94,8 +104,8 @@ func splitByLines(path string, linesPerFile int) error {
 	return nil
 }
 
-func splitByChunks(path string, chunksPerFile int) error {
-	file, err := os.Open(path)
+func (s *Split) ByChunk(chunksPerFile int) error {
+	file, err := os.Open(s.filePath)
 	if err != nil {
 		return err
 	}
