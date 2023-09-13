@@ -49,12 +49,6 @@ func TestHandle(t *testing.T) {
 			expectedError: false,
 		},
 		{
-			args:          []string{"-b", "test/test.txt"},
-			tailArgs:      []string{"test/test.txt"},
-			opts:          CLIOptions{},
-			expectedError: true,
-		},
-		{
 			args:          []string{"-n", "10", "test/test.txt"},
 			tailArgs:      []string{"test/test.txt"},
 			opts:          CLIOptions{ChunkCount: 10},
@@ -76,7 +70,7 @@ func TestHandle(t *testing.T) {
 			args:          []string{"-l", "10", "-n", "10", "test/test.txt"},
 			tailArgs:      []string{"test/test.txt"},
 			opts:          CLIOptions{LineCount: 10, ChunkCount: 10},
-			expectedError: true,
+			expectedError: false,
 		},
 		{
 			args:          []string{"-l", "0", "test/test.txt"},
