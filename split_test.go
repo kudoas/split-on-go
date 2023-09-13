@@ -36,14 +36,11 @@ func TestByByte(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.content, func(t *testing.T) {
 			inputPath := "test_input.txt"
-			err := createTestFile(t, inputPath, c.content)
-			if err != nil {
-				t.Errorf("Failed to create test input file: %v", err)
-			}
+			createTestFile(t, inputPath, c.content)
 			defer os.Remove(inputPath)
 
 			split := NewSplit(inputPath)
-			err = split.ByByte(c.bytesPerFile)
+			err := split.ByByte(c.bytesPerFile)
 			if err != nil && !c.expectedError {
 				t.Errorf("splitByBytes returned an unexpected error: %v", err)
 			} else if err == nil && c.expectedError {
@@ -85,14 +82,11 @@ func TestByLine(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.content, func(t *testing.T) {
 			inputPath := "test_input.txt"
-			err := createTestFile(t, inputPath, c.content)
-			if err != nil {
-				t.Errorf("Failed to create test input file: %v", err)
-			}
+			createTestFile(t, inputPath, c.content)
 			defer os.Remove(inputPath)
 
 			split := NewSplit(inputPath)
-			err = split.ByLine(c.linesPerFile)
+			err := split.ByLine(c.linesPerFile)
 			if err != nil && !c.expectedError {
 				t.Errorf("splitByLines returned an unexpected error: %v", err)
 			} else if err == nil && c.expectedError {
@@ -134,14 +128,11 @@ func TestByChunk(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.content, func(t *testing.T) {
 			inputPath := "test_input.txt"
-			err := createTestFile(t, inputPath, c.content)
-			if err != nil {
-				t.Errorf("Failed to create test input file: %v", err)
-			}
+			createTestFile(t, inputPath, c.content)
 			defer os.Remove(inputPath)
 
 			split := NewSplit(inputPath)
-			err = split.ByChunk(c.chunksPerFile)
+			err := split.ByChunk(c.chunksPerFile)
 			if err != nil && !c.expectedError {
 				t.Errorf("splitByChunks returned an unexpected error: %v", err)
 			} else if err == nil && c.expectedError {
@@ -159,19 +150,18 @@ func TestByChunk(t *testing.T) {
 	}
 }
 
-func createTestFile(t *testing.T, filePath, content string) error {
+func createTestFile(t *testing.T, filePath, content string) {
 	t.Helper()
 	file, err := os.Create(filePath)
 	if err != nil {
-		return err
+		t.Fatalf("Error create file: %v", err)
 	}
 	defer file.Close()
 
 	_, err = file.WriteString(content)
 	if err != nil {
-		return err
+		t.Fatalf("Error write file: %v", err)
 	}
-	return nil
 }
 
 func verifyFileSize(t *testing.T, expectedFileSize int, fileNames []string) {
@@ -179,7 +169,7 @@ func verifyFileSize(t *testing.T, expectedFileSize int, fileNames []string) {
 	for _, fileName := range fileNames {
 		file, err := os.Open(fileName)
 		if err != nil {
-			t.Errorf("Error opening file %s: %v", fileName, err)
+			t.Fatalf("Error opening file %s: %v", fileName, err)
 		}
 		defer file.Close()
 
@@ -188,7 +178,7 @@ func verifyFileSize(t *testing.T, expectedFileSize int, fileNames []string) {
 			t.Error(err)
 		}
 		if expectedFileSize != 0 && int(info.Size()) > expectedFileSize {
-			t.Errorf("File %s size mismatch, Expected: %d, but got: %d", fileName, expectedFileSize, info.Size())
+			t.Fatalf("File %s size mismatch, Expected: %d, but got: %d", fileName, expectedFileSize, info.Size())
 		}
 	}
 }
@@ -198,7 +188,7 @@ func verifyFileLine(t *testing.T, expectedLineCount int, fileNames []string) {
 	for _, fileName := range fileNames {
 		file, err := os.Open(fileName)
 		if err != nil {
-			t.Errorf("Error opening file %s: %v", fileName, err)
+			t.Fatalf("Error opening file %s: %v", fileName, err)
 		}
 		scanner := bufio.NewScanner(file)
 		lineCount := 0
@@ -206,10 +196,10 @@ func verifyFileLine(t *testing.T, expectedLineCount int, fileNames []string) {
 			lineCount++
 		}
 		if err := scanner.Err(); err != nil {
-			t.Errorf("Error reading file %s: %v", fileName, err)
+			t.Fatalf("Error reading file %s: %v", fileName, err)
 		}
 		if int(lineCount) > expectedLineCount {
-			t.Errorf("File %s line mismatch, Expected: %d, but got: %d", fileName, expectedLineCount, lineCount)
+			t.Fatalf("File %s line mismatch, Expected: %d, but got: %d", fileName, expectedLineCount, lineCount)
 		}
 	}
 }
@@ -219,7 +209,7 @@ func verifyFileCount(t *testing.T, fileNames []string) {
 	for _, fileName := range fileNames {
 		file, err := os.Open(fileName)
 		if err != nil {
-			t.Errorf("File %s count mismatch", fileName)
+			t.Fatalf("File %s count mismatch", fileName)
 		}
 		defer file.Close()
 	}
