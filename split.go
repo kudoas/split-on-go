@@ -86,6 +86,9 @@ func (s *Split) ByLine(linesPerFile int) error {
 			i++
 		}
 	}
+	if err := scanner.Err(); err != nil {
+		return err
+	}
 
 	if len(lines) > 0 {
 		outputFileName := fmt.Sprintf("%d", i)
