@@ -41,26 +41,20 @@ func (opts *CLIOptions) Handle(args []string, tailArgs []string) error {
 			return err
 		}
 	case "-l":
-		arg, err := strconv.Atoi(args[1])
-		if err != nil {
-			return err
-		}
+		arg, _ := strconv.Atoi(args[1])
 		if arg <= 0 {
 			return fmt.Errorf("%d: illegal line count", arg)
 		}
-		err = split.ByLine(opts.LineCount)
+		err := split.ByLine(opts.LineCount)
 		if err != nil {
 			return err
 		}
 	case "-n":
-		arg, err := strconv.Atoi(args[1])
-		if err != nil {
-			return err
-		}
+		arg, _ := strconv.Atoi(args[1])
 		if arg <= 0 {
 			return fmt.Errorf("%d: illegal line count", arg)
 		}
-		err = split.ByChunk(opts.ChunkCount)
+		err := split.ByChunk(opts.ChunkCount)
 		if err != nil {
 			return err
 		}
